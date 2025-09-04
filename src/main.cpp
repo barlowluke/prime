@@ -10,6 +10,7 @@ int main() {
     
     // TODO: Print the results
     std::cout << "Half method operations: " << halfOps << "\n";
+    std::cout << "Square root method operations: " << sqrtOps << "\n";
     // Add more output as needed
     
     // TODO: Calculate and print the ratio
