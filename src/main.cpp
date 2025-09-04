@@ -12,8 +12,6 @@ int main() {
     std::cout << "Half method operations: " << halfOps << "\n";
     std::cout << "Square root method operations: " << sqrtOps << "\n";
     
-    std::cout << "Count mod ops for 1000-1001: " << countModOps(isPrimeHalf, 1000, 1001) << "\n";
-    
     // TODO: Calculate and print the ratio
     double ratio = static_cast<double>(halfOps) / static_cast<double>(sqrtOps);
     std::cout << "Ratio (Half/Sqrt): " << ratio << "\n";

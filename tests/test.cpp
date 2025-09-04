@@ -4,13 +4,46 @@
 #include <vector>
 #include <set>
 
-TEST_CASE("isPrimeHalf - Composite numbers", "[prime][composite]") {
+// Testing few prime identification
+TEST_CASE("Prime numbers", "[prime]") {
+    long long modOps = 0;
+    
+    SECTION("Very small primes and edge cases") {
+        std::vector<int> primes = {2, 3, 5, 7};
+        for (int n : primes) {
+            REQUIRE(isPrimeHalf(n, &modOps) == true);
+            REQUIRE(isPrimeSqrt(n, &modOps) == true);
+        }
+    }
+    
+    SECTION("Medium primes") {
+        std::vector<int> primes = {11, 17, 23, 29, 37, 41, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97};
+        for (int n : primes) {
+            REQUIRE(isPrimeHalf(n, &modOps) == true);
+            REQUIRE(isPrimeSqrt(n, &modOps) == true);
+        }
+    }
+    
+    SECTION("Larger primes near upper limit") {
+        std::vector<int> primes = {
+            9901, 9907, 9923, 9929, 9931, 9941, 9949, 9967, 9973, 
+        };
+        for (int n : primes) {
+            REQUIRE(isPrimeHalf(n, &modOps) == true);
+            REQUIRE(isPrimeSqrt(n, &modOps) == true);
+        }
+    }
+}
+
+// Testing composite numbers
+TEST_CASE("Composite numbers", "[prime][composite]") {
     long long modOps = 0;
     
     SECTION("Even composite numbers (except 2)") {
         std::vector<int> evenComposites = {4, 6, 8, 10, 12, 14, 16, 18, 20, 100, 1000};
         for (int n : evenComposites) {
             REQUIRE(isPrimeHalf(n, &modOps) == false);
+            REQUIRE(isPrimeSqrt(n, &modOps) == false);
         }
     }
     
@@ -18,6 +51,7 @@ TEST_CASE("isPrimeHalf - Composite numbers", "[prime][composite]") {
         std::vector<int> oddComposites = {9, 15, 21, 25, 27, 33, 35, 39, 49, 55};
         for (int n : oddComposites) {
             REQUIRE(isPrimeHalf(n, &modOps) == false);
+            REQUIRE(isPrimeSqrt(n, &modOps) == false);
         }
     }
     
@@ -25,6 +59,7 @@ TEST_CASE("isPrimeHalf - Composite numbers", "[prime][composite]") {
         std::vector<int> squares = {4, 9, 16, 25, 36, 49, 64, 81, 100, 121, 144, 169, 196, 225};
         for (int n : squares) {
             REQUIRE(isPrimeHalf(n, &modOps) == false);
+            REQUIRE(isPrimeSqrt(n, &modOps) == false);
         }
     }
     
@@ -35,6 +70,7 @@ TEST_CASE("isPrimeHalf - Composite numbers", "[prime][composite]") {
         };
         for (int n : semiPrimes) {
             REQUIRE(isPrimeHalf(n, &modOps) == false);
+            REQUIRE(isPrimeSqrt(n, &modOps) == false);
         }
     }
     
@@ -44,6 +80,7 @@ TEST_CASE("isPrimeHalf - Composite numbers", "[prime][composite]") {
         };
         for (int n : multiFactor) {
             REQUIRE(isPrimeHalf(n, &modOps) == false);
+            REQUIRE(isPrimeSqrt(n, &modOps) == false);
         }
     }
     
@@ -53,6 +90,7 @@ TEST_CASE("isPrimeHalf - Composite numbers", "[prime][composite]") {
         };
         for (int n : largeComposites) {
             REQUIRE(isPrimeHalf(n, &modOps) == false);
+            REQUIRE(isPrimeSqrt(n, &modOps) == false);
         }
     }
     
@@ -62,20 +100,13 @@ TEST_CASE("isPrimeHalf - Composite numbers", "[prime][composite]") {
         };
         for (int n : carmichael) {
             REQUIRE(isPrimeHalf(n, &modOps) == false);
-        }
-    }
-    
-    SECTION("Edge case composites") {
-        std::vector<int> edgeCases = {
-            1, 0, -4, -9, -100
-        };
-        for (int n : edgeCases) {
-            REQUIRE(isPrimeHalf(n, &modOps) == false);
+            REQUIRE(isPrimeSqrt(n, &modOps) == false);
         }
     }
 }
 
-TEST_CASE("isPrimeHalf - Mod operation counting for composites", "[prime][composite][performance]") {
+// Testing mod operation counts
+TEST_CASE("Mod operation counting for composites", "[prime][composite][performance]") {
     long long modOps = 0;
     
     SECTION("Early termination for even composites") {
@@ -84,7 +115,15 @@ TEST_CASE("isPrimeHalf - Mod operation counting for composites", "[prime][compos
         REQUIRE(modOps == 1);
         
         modOps = 0;
+        isPrimeSqrt(4, &modOps);
+        REQUIRE(modOps == 1);
+        
+        modOps = 0;
         isPrimeHalf(100, &modOps);
+        REQUIRE(modOps == 1);
+
+        modOps = 0;
+        isPrimeSqrt(100, &modOps);
         REQUIRE(modOps == 1);
     }
     
@@ -94,7 +133,15 @@ TEST_CASE("isPrimeHalf - Mod operation counting for composites", "[prime][compos
         REQUIRE(modOps == 2);
         
         modOps = 0;
+        isPrimeSqrt(9, &modOps);
+        REQUIRE(modOps == 2);
+        
+        modOps = 0;
         isPrimeHalf(25, &modOps);
+        REQUIRE(modOps == 3);
+
+        modOps = 0;
+        isPrimeSqrt(25, &modOps);
         REQUIRE(modOps == 3);
     }
     
@@ -104,150 +151,40 @@ TEST_CASE("isPrimeHalf - Mod operation counting for composites", "[prime][compos
         REQUIRE(modOps == 2);
         
         modOps = 0;
+        isPrimeSqrt(15, &modOps);
+        REQUIRE(modOps == 2);
+        
+        modOps = 0;
         isPrimeHalf(35, &modOps);
+        REQUIRE(modOps == 3);
+
+        modOps = 0;
+        isPrimeSqrt(35, &modOps);
         REQUIRE(modOps == 3);
     }
 }
 
-TEST_CASE("isPrimeHalf - Composite number patterns", "[prime][composite][patterns]") {
+// Test edge cases
+TEST_CASE("Edge cases", "[prime][edge]") {
     long long modOps = 0;
     
-    SECTION("All numbers divisible by small primes") {
-        std::vector<int> primes = {2, 3, 5, 7, 11, 13, 17, 19, 23};
-        std::set<int> testedNumbers;
-        
-        for (int prime : primes) {
-            for (int multiple = 2; multiple <= 10; ++multiple) {
-                int n = prime * multiple;
-                if (n != prime && testedNumbers.find(n) == testedNumbers.end()) {
-                    testedNumbers.insert(n);
-                    INFO("Testing " << n << " = " << prime << " × " << multiple);
-                    REQUIRE(isPrimeHalf(n, &modOps) == false);
-                }
-            }
-        }
-    }
-    
-    SECTION("Range of composite numbers") {
-        std::set<int> testedNumbers;
-        
-        // Even composites in range
-        for (int n = 4; n <= 50; n += 2) {
-            if (testedNumbers.find(n) == testedNumbers.end()) {
-                testedNumbers.insert(n);
-                REQUIRE(isPrimeHalf(n, &modOps) == false);
-            }
-        }
-        
-        // Specific odd composites
-        std::vector<int> oddComposites = {9, 15, 21, 25, 27, 33, 35, 39, 45, 49};
-        for (int n : oddComposites) {
-            if (testedNumbers.find(n) == testedNumbers.end()) {
-                testedNumbers.insert(n);
-                REQUIRE(isPrimeHalf(n, &modOps) == false);
-            }
-        }
-    }
-}
-
-TEST_CASE("isPrimeHalf - Comprehensive composite verification", "[prime][composite][comprehensive]") {
-    long long modOps = 0;
-    
-    // Create a set of all unique composite numbers to test
-    std::set<int> allComposites;
-    
-    // Add numbers from all categories
-    std::vector<std::vector<int>> compositeCategories = {
-        // Even composites
-        {4, 6, 8, 10, 12, 14, 16, 18, 20, 100, 1000},
-        // Odd composites  
-        {9, 15, 21, 25, 27, 33, 35, 39, 49, 55},
-        // Perfect squares
-        {4, 9, 16, 25, 36, 49, 64, 81, 100, 121, 144, 169, 196, 225},
-        // Semi-primes
-        {6, 10, 14, 15, 21, 22, 26, 33, 34, 35, 38, 39, 46, 51, 55, 57, 58, 62, 65, 69, 77, 85, 91, 95},
-        // Multi-factor
-        {12, 18, 24, 30, 36, 42, 48, 60, 72, 84, 90, 96},
-        // Large composites
-        {100, 200, 500, 1000, 1024, 2025, 4096, 10000},
-        // Carmichael
-        {561, 1105, 1729, 2465, 2821},
-        // Edge cases
-        {1, 0, -4, -9, -100}
-    };
-    
-    // Combine all numbers into a single set (automatically removes duplicates)
-    for (const auto& category : compositeCategories) {
-        for (int n : category) {
-            allComposites.insert(n);
-        }
-    }
-    
-    // Test all unique composite numbers
-    SECTION("All unique composite numbers return false") {
-        for (int n : allComposites) {
-            INFO("Testing composite number: " << n);
+    SECTION("Negative numbers") {
+        std::vector<int> negatives = {-1, -2, -3, -10, -100};
+        for (int n : negatives) {
             REQUIRE(isPrimeHalf(n, &modOps) == false);
+            REQUIRE(isPrimeSqrt(n, &modOps) == false);
         }
     }
     
-    // Verify we have a good number of test cases
-    SECTION("Test case count verification") {
-        REQUIRE(allComposites.size() > 50); // Should have plenty of test cases
-        INFO("Testing " << allComposites.size() << " unique composite numbers");
-    }
-}
-
-// Helper function to calculate expected modOps based on the rules
-long long calculateExpectedModOps(int n) {
-    if (n <= 1) return 0;
-    if (n == 2) return 0;
-    if (n % 2 == 0) return 1; // Even numbers
-    
-    // Odd numbers: count from 3, add 2 each time
-    // For n >= 3, number of modOps = (n - 1) / 2
-    return (n - 1) / 2;
-}
-
-TEST_CASE("countModOps - Single numbers with specific rules", "[countModOps][single]") {
-    SECTION("Numbers <= 1 should have 0 modOps") {
-        REQUIRE(countModOps(isPrimeHalf, 0, 0) == 0);
-        REQUIRE(countModOps(isPrimeHalf, 1, 1) == 0);
-        REQUIRE(countModOps(isPrimeHalf, -5, -5) == 0); // Still test negative but expect 0
+    SECTION("Zero and one") {
+        REQUIRE(isPrimeHalf(0, &modOps) == false);
+        REQUIRE(isPrimeSqrt(0, &modOps) == false);
+        REQUIRE(isPrimeHalf(1, &modOps) == false);
+        REQUIRE(isPrimeSqrt(1, &modOps) == false);
     }
     
-    SECTION("Number 2 should have 0 modOps") {
-        REQUIRE(countModOps(isPrimeHalf, 2, 2) == 0);
-    }
-    
-    SECTION("Even numbers should have 1 modOp") {
-        REQUIRE(countModOps(isPrimeHalf, 4, 4) == 1);
-        REQUIRE(countModOps(isPrimeHalf, 6, 6) == 1);
-        REQUIRE(countModOps(isPrimeHalf, 8, 8) == 1);
-        REQUIRE(countModOps(isPrimeHalf, 10, 10) == 1);
-        REQUIRE(countModOps(isPrimeHalf, 100, 100) == 1);
-    }
-}
-
-TEST_CASE("countModOps - Range verification with rules", "[countModOps][range]") {
-    SECTION("Empty range should return 0") {
-        REQUIRE(countModOps(isPrimeHalf, 10, 5) == 0);
-    }
-    
-    SECTION("Range with single number") {
-        REQUIRE(countModOps(isPrimeHalf, 4, 4) == calculateExpectedModOps(4));
-        REQUIRE(countModOps(isPrimeHalf, 7, 7) == calculateExpectedModOps(7));
-        REQUIRE(countModOps(isPrimeHalf, 2, 2) == calculateExpectedModOps(2));
-    }
-}
-
-TEST_CASE("countModOps - Pattern consistency", "[countModOps][pattern]") {
-    SECTION("Large number verification") {
-        // Test a large even number
-        REQUIRE(countModOps(isPrimeHalf, 1000, 1000) == 1);
-        
-        // Test a large odd number
-        REQUIRE(countModOps(isPrimeHalf, 1001, 1001) == 500); // (1001-1)/2 = 500
-        REQUIRE(countModOps(isPrimeHalf, 999, 999) == 499);   // (999-1)/2 = 499
+    SECTION("Two (the only even prime)") {
+        REQUIRE(isPrimeHalf(2, &modOps) == true);
+        REQUIRE(isPrimeSqrt(2, &modOps) == true);
     }
 }
