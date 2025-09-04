@@ -20,7 +20,7 @@ bool isPrimeHalf(int n, long long* modOps) {
     }
         
     // check for odd numbers
-    for (int i = 3; i < n/2; i += 2) {
+    for (int i = 3; i <= n/2; i += 2) {
         if (modOps != nullptr) {
             (*modOps) += 1;
         }
