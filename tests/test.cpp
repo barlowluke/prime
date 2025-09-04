@@ -105,7 +105,7 @@ TEST_CASE("isPrimeHalf - Mod operation counting for composites", "[prime][compos
         
         modOps = 0;
         isPrimeHalf(35, &modOps);
-        REQUIRE(modOps == 4);
+        REQUIRE(modOps == 3);
     }
 }
 

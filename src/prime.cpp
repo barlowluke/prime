@@ -8,13 +8,17 @@ bool isPrimeHalf(int n, long long* modOps) {
     } else if (n == 2) {
         return true;
     }
+
     // check for even numbers
     if (n % 2 == 0) {
-        if (modOps != nullptr) {
+        if (modOps != nullptr) 
             (*modOps) += 1;
-        }
         return false;
+    } else {
+        if (modOps != nullptr) 
+            (*modOps) += 1;
     }
+        
     // check for odd numbers
     for (int i = 3; i <= n/2; i += 2) {
         if (modOps != nullptr) {
