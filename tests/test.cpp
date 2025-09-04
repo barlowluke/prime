@@ -4,9 +4,6 @@
 #include <vector>
 #include <set>
 
-// Forward declaration
-extern bool isPrimeHalf(int n, long long* modOps);
-
 TEST_CASE("isPrimeHalf - Composite numbers", "[prime][composite]") {
     long long modOps = 0;
     
