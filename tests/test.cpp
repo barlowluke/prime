@@ -198,8 +198,138 @@ TEST_CASE("isPrimeHalf - Comprehensive composite verification", "[prime][composi
     }
 }
 
-// test for few range of prime numbers if both methods are consistent
+// Helper function to calculate expected modOps based on the rules
+long long calculateExpectedModOps(int n) {
+    if (n <= 1) return 0;
+    if (n == 2) return 0;
+    if (n % 2 == 0) return 1; // Even numbers
+    
+    // Odd numbers: count from 3, add 2 each time
+    // For n >= 3, number of modOps = (n - 1) / 2
+    return (n - 1) / 2;
+}
 
-// Testing mod operation counts
+TEST_CASE("countModOps - Single numbers with specific rules", "[countModOps][single]") {
+    SECTION("Numbers <= 1 should have 0 modOps") {
+        REQUIRE(countModOps(isPrimeHalf, 0, 0) == 0);
+        REQUIRE(countModOps(isPrimeHalf, 1, 1) == 0);
+        REQUIRE(countModOps(isPrimeHalf, -5, -5) == 0); // Still test negative but expect 0
+    }
+    
+    SECTION("Number 2 should have 0 modOps") {
+        REQUIRE(countModOps(isPrimeHalf, 2, 2) == 0);
+    }
+    
+    SECTION("Even numbers should have 1 modOp") {
+        REQUIRE(countModOps(isPrimeHalf, 4, 4) == 1);
+        REQUIRE(countModOps(isPrimeHalf, 6, 6) == 1);
+        REQUIRE(countModOps(isPrimeHalf, 8, 8) == 1);
+        REQUIRE(countModOps(isPrimeHalf, 10, 10) == 1);
+        REQUIRE(countModOps(isPrimeHalf, 100, 100) == 1);
+    }
+    
+    SECTION("Odd numbers should follow the pattern") {
+        REQUIRE(countModOps(isPrimeHalf, 3, 3) == 1);   // (3-1)/2 = 1
+        REQUIRE(countModOps(isPrimeHalf, 5, 5) == 2);   // (5-1)/2 = 2
+        REQUIRE(countModOps(isPrimeHalf, 7, 7) == 3);   // (7-1)/2 = 3
+        REQUIRE(countModOps(isPrimeHalf, 9, 9) == 4);   // (9-1)/2 = 4
+        REQUIRE(countModOps(isPrimeHalf, 11, 11) == 5); // (11-1)/2 = 5
+        REQUIRE(countModOps(isPrimeHalf, 15, 15) == 7); // (15-1)/2 = 7
+    }
+}
 
-// test edge cases
+TEST_CASE("countModOps - Range verification with rules", "[countModOps][range]") {
+    SECTION("Empty range should return 0") {
+        REQUIRE(countModOps(isPrimeHalf, 10, 5) == 0);
+    }
+    
+    SECTION("Range with single number") {
+        REQUIRE(countModOps(isPrimeHalf, 4, 4) == calculateExpectedModOps(4));
+        REQUIRE(countModOps(isPrimeHalf, 7, 7) == calculateExpectedModOps(7));
+        REQUIRE(countModOps(isPrimeHalf, 2, 2) == calculateExpectedModOps(2));
+    }
+    
+    SECTION("Small ranges") {
+        // Range 1-3: 0 (n=1) + 0 (n=2) + 1 (n=3) = 1
+        REQUIRE(countModOps(isPrimeHalf, 1, 3) == 1);
+        
+        // Range 4-6: 1 (n=4) + 2 (n=5) + 1 (n=6) = 4
+        REQUIRE(countModOps(isPrimeHalf, 4, 6) == 4);
+        
+        // Range 7-9: 3 (n=7) + 1 (n=8) + 4 (n=9) = 8
+        REQUIRE(countModOps(isPrimeHalf, 7, 9) == 8);
+    }
+    
+    SECTION("Range with only even numbers") {
+        // 4,6,8,10: all have 1 modOp each = 4 total
+        REQUIRE(countModOps(isPrimeHalf, 4, 10) == 4);
+        
+        // 100,102,104: all have 1 modOp each = 3 total
+        REQUIRE(countModOps(isPrimeHalf, 100, 104) == 3);
+    }
+    
+    SECTION("Range with only odd numbers") {
+        // 3,5,7,9: 1 + 2 + 3 + 4 = 10
+        REQUIRE(countModOps(isPrimeHalf, 3, 9) == 10);
+        
+        // 11,13,15: 5 + 6 + 7 = 18
+        REQUIRE(countModOps(isPrimeHalf, 11, 15) == 18);
+    }
+    
+    SECTION("Mixed range") {
+        // 2,3,4,5: 0 + 1 + 1 + 2 = 4
+        REQUIRE(countModOps(isPrimeHalf, 2, 5) == 4);
+        
+        // 8,9,10,11: 1 + 4 + 1 + 5 = 11
+        REQUIRE(countModOps(isPrimeHalf, 8, 11) == 11);
+    }
+}
+
+TEST_CASE("countModOps - Additivity property", "[countModOps][additivity]") {
+    SECTION("Sum of parts equals whole") {
+        long long total = countModOps(isPrimeHalf, 1, 10);
+        long long part1 = countModOps(isPrimeHalf, 1, 5);
+        long long part2 = countModOps(isPrimeHalf, 6, 10);
+        
+        REQUIRE(total == part1 + part2);
+        
+        // Manual calculation: 
+        // n=1:0, n=2:0, n=3:1, n=4:1, n=5:2, n=6:1, n=7:3, n=8:1, n=9:4, n=10:1
+        // Total = 0+0+1+1+2+1+3+1+4+1 = 14
+        REQUIRE(total == 14);
+    }
+    
+    SECTION("Multiple partitions") {
+        long long total = countModOps(isPrimeHalf, 3, 9);
+        long long part1 = countModOps(isPrimeHalf, 3, 5);
+        long long part2 = countModOps(isPrimeHalf, 6, 7);
+        long long part3 = countModOps(isPrimeHalf, 8, 9);
+        
+        REQUIRE(total == part1 + part2 + part3);
+    }
+}
+
+TEST_CASE("countModOps - Pattern consistency", "[countModOps][pattern]") {
+    SECTION("Verify pattern for consecutive numbers") {
+        for (int start = 3; start <= 20; start += 2) { // Test odd numbers
+            long long expected = calculateExpectedModOps(start);
+            long long actual = countModOps(isPrimeHalf, start, start);
+            REQUIRE(actual == expected);
+        }
+        
+        for (int start = 4; start <= 20; start += 2) { // Test even numbers
+            long long expected = calculateExpectedModOps(start);
+            long long actual = countModOps(isPrimeHalf, start, start);
+            REQUIRE(actual == expected);
+        }
+    }
+    
+    SECTION("Large number verification") {
+        // Test a large even number
+        REQUIRE(countModOps(isPrimeHalf, 1000, 1000) == 1);
+        
+        // Test a large odd number
+        REQUIRE(countModOps(isPrimeHalf, 1001, 1001) == 500); // (1001-1)/2 = 500
+        REQUIRE(countModOps(isPrimeHalf, 999, 999) == 499);   // (999-1)/2 = 499
+    }
+}
