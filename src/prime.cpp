@@ -2,12 +2,24 @@
 #include <cmath>
 
 bool isPrimeHalf(int n, long long* modOps) {
-    if (n == 2) {
+    // base cases; no mod operations
+    if (n <= 1) {
+        return false;
+    } else if (n == 2) {
         return true;
     }
+    // check for even numbers
+    if (n % 2 == 0) {
+        if (modOps != nullptr) 
+            modOps += 1;
+        return false;
+    }
+
+    // check for odd numbers
     for (int i = 3; i <= n/2; i += 2) {
         if (n % i == 0) {
-            modOps += 1;
+            if (modOps != nullptr) 
+                modOps += 1;
             return false;
         }
     }
@@ -15,12 +27,15 @@ bool isPrimeHalf(int n, long long* modOps) {
 }
 
 bool isPrimeSqrt(int n, long long* modOps) {
-    if (n == 2) {
+    if (n <= 1) {
+        return false;
+    } else if (n == 2) {
         return true;
     }
     for (int i = 3; i < std::sqrt(n); i += 2) {
         if (n % i == 0) {
-            modOps += 1;
+            if (modOps != nullptr) 
+                modOps += 1;
             return false;
         }
     }
