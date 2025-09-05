@@ -62,6 +62,7 @@ bool isPrimeSqrt(int n, long long* modOps) {
 }
 
 long long countModOps(PrimeFn isPrime, int lo, int hi) {
+    // invalid case
     if (isPrime == nullptr || hi < lo) {
         return 0;
     }
